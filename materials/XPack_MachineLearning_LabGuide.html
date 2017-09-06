@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Lab Guide: X-Pack Security</title>
+
+        <style>
+            html {
+                background-color: #e6e9e9;
+                background-image: -webkit-linear-gradient(270deg,rgb(230,233,233) 0%,rgb(216,221,221) 100%);
+                background-image: linear-gradient(270deg,rgb(230,233,233) 0%,rgb(216,221,221) 100%);
+                -webkit-font-smoothing: antialiased;
+            }
+
+            body {
+                margin: 0 auto;
+                padding: 2em 2em 4em;
+                max-width: 900px;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 16px;
+                line-height: 1.5em;
+                color: #545454;
+                background-color: #ffffff;
+                box-shadow: 0 0 2px rgba(0, 0, 0, 0.06);
+            }
+
+            h1, h2, h3, h4, h5, h6 {
+                color: white;
+                font-weight: 400;
+                line-height: 1.5em;
+                background-color: rgb(7,165,222);
+                font: Arial;
+                padding-left: 15px;
+                box-shadow: 10px 10px 5px rgb(144, 144, 145);
+            }
+            h2, h3 {
+                background: #3399cc; /* Old browsers */
+                background: -moz-linear-gradient(top,  #3399cc 0%, #003366 0%, #3399cc 100%); /* FF3.6-15 */
+                background: -webkit-linear-gradient(top,  #3399cc 0%,#003366 0%,#3399cc 100%); /* Chrome10-25,Safari5.1-6 */
+                background: linear-gradient(to bottom,  #3399cc 0%,#003366 0%,#3399cc 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3399cc', endColorstr='#3399cc',GradientType=0 ); /* IE6-9 */
+
+            }
+
+            h1 {
+                background: #3399cc; 
+                background: -moz-linear-gradient(top,  #3399cc 0%, #207cca 0%, #009999 100%); /* FF3.6-15 */
+                background: -webkit-linear-gradient(top,  #3399cc 0%,#207cca 0%,#009999 100%); /* Chrome10-25,Safari5.1-6 */
+                background: linear-gradient(to bottom,  #3399cc 0%,#207cca 0%,#009999 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3399cc', endColorstr='#009999',GradientType=0 ); /* IE6-9 */
+
+            }            
+
+            h3 {
+                font-weight: bold;
+            }
+            p.summary {
+                margin-top: 3em;
+                margin-bottom: 3em;
+            }
+
+            a {
+                color: #0083e8;
+            }
+
+            b, strong {
+                font-weight: 600;
+            }
+
+            samp {
+                display: none;
+            }
+
+            img {
+                -webkit-animation: colorize 2s cubic-bezier(0, 0, .78, .36) 1;
+                animation: colorize 2s cubic-bezier(0, 0, .78, .36) 1;
+                background: transparent;
+                border: 10px solid rgba(0, 0, 0, 0.12);
+                border-radius: 4px;
+                display: block;
+                margin: 1.3em auto;
+                max-width: 95%;
+            }
+
+            @-webkit-keyframes colorize {
+                0% {
+                    -webkit-filter: grayscale(100%);
+                }
+                100% {
+                    -webkit-filter: grayscale(0%);
+                }
+            }
+
+            @keyframes colorize {
+                0% {
+                    filter: grayscale(100%);
+                }
+                100% {
+                    filter: grayscale(0%);
+                }
+            }
+
+            pre code {
+                padding: 0;
+                color: #3f3b36;
+                background-color: transparent;
+                font-size: 1.0rem;
+                line-height: 2rem;
+                text-shadow: none;
+            }
+
+            code {
+                font-weight: lighter;
+                font-family: Monaco,'MonacoRegular',monospace;
+            }
+
+            pre {
+                width: 92%;
+                overflow: auto;
+                margin: 1rem 0;
+                margin-top: 1rem;
+                margin-right: 0px;
+                margin-bottom: 1rem;
+                margin-left: 0px;
+                padding: 1rem 0.8rem 1rem 1.2rem;
+                padding-top: 1rem;
+                padding-right: 0.8rem;
+                padding-bottom: 1rem;
+                padding-left: 1.2rem;
+                color: #3f3b36;
+                border: 1px solid #39bdb1;
+                border-left: 1rem solid #39bdb1;
+                font: lighter 1.0rem/2rem Monaco,'MonacoRegular',monospace;
+                font-style: normal;
+                font-variant-ligatures: normal;
+                font-variant-caps: normal;
+                font-variant-numeric: normal;
+                font-weight: lighter;
+                font-stretch: normal;
+                font-size: 1.0rem;
+                line-height: 1.4rem;
+                font-family: Monaco, MonacoRegular, monospace;
+                background: url(images/pre.png) repeat 0 -0.9rem;
+                background-image: url(images/pre.png);
+                background-position-x: 0px;
+                background-position-y: -0.9rem;
+                background-repeat-x: repeat;
+                background-repeat-y: repeat;
+                background-attachment: initial;
+                background-origin: initial;
+                background-clip: initial;
+                background-color: initial;
+                background-size: 1px 4rem;
+                box-shadow: 10px 10px 5px rgb(144, 144, 145);
+            }
+
+            pre.bash {
+                background-color: black;
+                color: white;
+                font-family: Monaco,MonacoRegular,monospace;
+            }
+
+            hr {
+                margin-bottom: 4em;
+                margin-top: 4em;
+                border : 0;
+                height: 1px; 
+                background-image: linear-gradient(to right, #66ccff, #006699, #66ccff); 
+            }
+
+            ol li {
+                margin-top: 3rem;
+            }
+            ul li {
+                margin-top: 0
+            }
+
+            kbd {
+                font-family: Monaco,'MonacoRegular',monospace;
+                font-weight: bold;
+                font-size: 0.9rem;
+                line-height: 1rem;
+            }
+
+            h2 {
+                font-size: 2.5rem;
+            }        
+        </style>
+        <script type="text/javascript"> 
+            function showPicture(id, src) {
+                document.getElementById(id).src = src;
+            }
+
+            function showAnswer(id) {
+                document.getElementById(id).style.display = "block";
+            }
+        </script>
+    </head>
+    <body>
+        <h1>Lab Guide: X-Pack Machine Learning</h1>
+        <ul>
+            <li><a href="#lab1">Lab 1: Setting up X-Pack Machine Learning</a></li>
+            <li><a href="#lab2">Lab 2: Multi-Metric Jobs: Fare Quote</a></li>
+            <li><a href="#lab3">Lab 3: Advanced Jobs</a></li>
+            <li><a href="#lab4">Lab 4: Machine Learning API</a></li>
+        </ul>    
+        <hr/>        
+        <a name="lab1"></a> 
+        <h2>Lab 1: Single Metric Jobs &amp; Setting Up</h2>
+        <p><b>Objective</b>: In this lab, you will install Elasticsearch, Kibana, Logstash, and the X-Pack plugins. You will then begin to use the Machine Learning Interface, load some data and create a <strong>Single Metric Job</strong>.</p>
+
+        <ol>
+            <li>
+                Download the latest version of Elasticsearch at <a href="https://www.elastic.co/downloads/elasticsearch" target="_blank">https://www.elastic.co/downloads/elasticsearch</a>. You must use version 5.0 or greater for this course.
+            </li>
+            <li>
+                Extract the Elasticsearch file that you just downloaded. You can extract it anywhere convenient on your local machine, and the following lab instructions will refer to your Elasticsearch folder as <kbd>ES_HOME</kbd>.
+            </li>
+            <li>
+                Open a <kbd>Terminal</kbd> or <kbd>Command Prompt</kbd> and change directories to your <kbd>ES_HOME/bin</kbd> folder. Start Elasticsearch using the following command:
+                <br/><br/><strong>On Windows:</strong>
+                <pre class="bash">.\elasticsearch</pre>
+                <br/><strong>Mac/Linux users:</strong>
+                <pre class="bash">./elasticsearch
+</pre>                
+            </li>
+            <li>
+                Open your Web browser and go to <a href="http://localhost:9200" target="_blank">http://localhost:9200</a>. You should see the start page that verifies Elasticsearch is running on your localhost. More importantly for this lab, notice that you can access this URL without logging in.
+            </li>
+            <li>
+                Stop Elasticsearch by entering <kbd>ctrl-c</kbd> in your terminal window running Elasticsearch.
+            </li>
+            <li>
+                Install X-Pack using the following command from <kbd>ES_HOME/bin</kbd>:
+                <br/><br/><strong>On Windows:</strong>
+                <pre class="bash">.\elasticsearch-plugin install x-pack</pre>
+                <br/><strong>Mac/Linux users:</strong>
+                <pre class="bash">
+./elasticsearch-plugin install x-pack
+</pre>        <br/>
+                You will have to confirm the install after it downloads by entering <kbd>y</kbd> when prompted. (Also enter <kbd>y</kbd> if warned about a native controller.)
+            </li>
+            <li>
+                Start Elasticsearch again and go to <a href="http://localhost:9200" target="_blank">http://localhost:9200</a>. This time you are prompted to login. Use the default credentials.
+                <ul>
+                    <li>Username: <kbd>elastic</kbd></li>
+                    <li>Password: <kbd>changeme</kbd></li>
+                </ul>
+            </li>
+            <li>
+                Download the appropriate version of Kibana for your architecture at <a href="https://www.elastic.co/downloads/kibana" target="_blank">https://www.elastic.co/downloads/kibana</a>. You must use version 5.0 or greater for this course, and be sure to download the same version of Kibana that matches your version of Elasticsearch.
+            </li>
+            <li>
+                Extract Kibana onto your local machine. This folder will be referred to as <kbd>KIBANA_HOME</kbd> throughout the labs in this course.
+            </li>
+            <li>
+                Open a new <kbd>Terminal</kbd> or <kbd>Console</kbd>. Install X-Pack on Kibana by running the following command from the <kbd>KIBANA_HOME/bin</kbd> folder:
+                <br/><br/><strong>On Windows:</strong>
+                <pre class="bash">.\kibana-plugin install x-pack</pre>
+                <br/><strong>Mac/Linux users:</strong>
+                <pre class="bash">./kibana-plugin install x-pack
+</pre>        <br/>
+                It may take several minutes for the necessary files to download and install.
+            </li>
+            <li>
+                Start Kibana by running the following command from the <kbd>KIBANA_HOME/bin</kbd> folder:
+                <br/><br/><strong>On Windows:</strong>
+                <pre class="bash">.\kibana</pre>
+                <br/><strong>Mac/Linux users:</strong>
+                <pre class="bash">./kibana</pre> 
+            </li>
+            <li>
+                Point your web browser to <a href="http://localhost:5601" target="_blank">http://localhost:5601</a>. You will need to login (because X-Pack is installed). The default credentials for the admin user are:
+                <ul>
+                    <li>Username: <kbd>elastic</kbd></li>
+                    <li>Password: <kbd>changeme</kbd></li>
+                </ul>
+            </li>
+            <li>
+                Download Logstash from <a href="https://www.elastic.co/downloads/logstash" target="_blank">https://www.elastic.co/downloads/logstash</a>. Be sure the download the same version of Logstash as your Kibana and Elasticsearch versions.
+            </li>
+            <li>
+                Extract Logstash onto your local machine. This folder will be referred to <kbd>LOGSTASH_HOME</kbd> throughout the labs in this course.
+            </li>
+            <li>
+                Now you are ready to load some data to play with in this lab. We will use Logstash to load this data. To simplify the Logstash command, copy the <kbd>stocks/stocks.csv</kbd> and <kbd>stocks.conf</kbd> files from the downloaded lab files into your <kbd>LOGSTASH_HOME/bin</kbd> folder.
+            </li>
+            <li>
+                From a new Terminal or Command Prompt window, change directory to the <kbd>LOGSTASH_HOME/bin</kbd> directory and run this command to begin loading the data into Elasticsearch:
+                <br/><br/><strong>On Windows:</strong>
+                <pre class="bash">type stocks.csv | .\logstash -f stocks.conf</pre>
+                <br/><strong>Mac/Linux users:</strong>
+                <pre class="bash">cat stocks.csv | ./logstash -f stocks.conf</pre> 
+            </li>
+            <li>
+                After this data has finished loading open the <strong>Dev Tools</strong> tab in Kibana and run this command:
+                <pre class="code">GET stocks/_search</pre>
+                You should get 1,859 hits. 
+            </li>
+            <li>
+                It's important to get familiar with what the data looks like you want to use. You got back 10 documents from your previous query. Notice each document has a <strong>@timestamp</strong> field (when this document was aggregated) and  fields representing the price at the time of the aggregation for <strong>DAX</strong>, <strong>CAC</strong>, <strong>FTSE</strong> and <strong>SMI</strong>.
+            </li>
+            <li>
+                You have to setup the index pattern so Machine Learning can use this index for analysis. Click on the <strong>Management</strong> tab and select <strong>Index Patterns:</strong>
+                <img src="images/index-management.png"/>
+            </li>
+            <li>
+                Create an index pattern called <strong>stocks</strong> and then click <strong>Create:</strong>
+                <img src="images/index-pattern.png"/>
+            </li>
+            <li>
+                You are now ready to create a <strong>Machine Learning</strong> job for the <strong>stocks</strong> dataset! Click on the <strong>Machine Learning</strong> tab and click <strong>Create new job</strong> and then select <strong>Create a single metric job:</strong>
+                <img src="images/single-metric-job.png"/>
+            </li>
+            <li>
+                Select the <strong>stocks</strong> index:
+                <img src="images/stocks-job.png"/>
+            </li>
+            <li>
+                <p>This dataset represents aggregated index forecast data from 4 different exchanges. Because the data was pre-aggregated to 1800 second intervals it isn't very precise from the original data - but it's good for training! </p>
+                <p>Using a <strong>Count</strong> aggregation wouldn't make much sense. Try it and view the results using 30m <strong>Bucket Spans</strong>. Make sure you click on the <strong>"Use full stocks data"</strong> button on the right-hand side. </p>
+                <p>
+                    You'll notice you don't see anything interesting. It is because this dataset is pre-aggregated prices so each interval has the same count of documents. What would be a more interesting <strong>Aggregation</strong> to use?
+            </li>
+            <li>
+                <strong>Mean</strong> is much more interesting! And if we want to get a <strong>Mean</strong> we need to select a field. And because we are interested in the <strong>DAX Exchange</strong> we would select DAX.
+                Configure this job to use:
+                <ul>
+                    <li>  The <strong>Mean</strong> aggregation
+                    </li>
+                    <li> On the field <strong>DAX</strong>
+                    </li>
+                    <li> With a <strong>30m Bucket Span</strong>
+                    </li>
+                    <li>
+                        Below the graph, assign the job <kbd>Name</kbd> as <kbd>stocks-dax-mean</kbd>
+                    </li>
+                    <li>
+                        Fill in a <kbd>Description</kbd> like "This job will detect anomalies in the DAX market"
+                    </li>
+                </ul>
+                Your configuration should look like this:
+                <img src="images/lab-1-dax-stocks.png"/>
+            </li>
+            <li>
+                After configuring the job, click the <strong>"Create job"</strong> button. You will notice that Machine Learning begins to analyze the data. When the job is complete, click the <strong>"View results"</strong> button.  You should see the <strong>"Single Metric Viewer"</strong> page. (<strong>NOTE: </strong> Kibana shows this result in a separate popup window. You may need to allow Kibana to open a popup window in your browser settings.)
+                <img src="images/single-metric-view-stocks.png"/>
+            </li>
+            <li>
+                In the <strong>Anomalies</strong> section below the chart on the <strong>Single Metric Viewer page</strong>, change the <strong>Interval:</strong> dropdown to <strong>"Show all"</strong>. How many <strong>critical</strong> anomalies are found across the entire dataset? What is the highest anomaly score for the critical anomalies and what is the minimum in this dataset?
+                <br/>
+                <input type="button" value="Show answer:" onclick="showAnswer('solution1')" />
+                <div id="solution1"  style="display:none;" > There are 6 criticals and the maximum is 97 and the minimum is 75.
+                    <img src="images/solution-1.png"/>
+                </div>
+            </li>
+            <li>
+                What day did the only <strong>minor</strong> anomaly occur?
+                <br/>
+                <input type="button" value="Show answer:" onclick="showAnswer('solution2')" />
+                <div id="solution2"  style="display:none;" > February 4th 2017, 08:00
+                    <img src="images/solution-2.png"/>
+                </div>
+            </li>
+        </ol>
+
+
+        <p class="summary"><b>Summary</b>: Congratulations! You have completed Lab 1. You loaded the sample data and installed X-Pack, and you created a Single Metric Job with which you discovered anomalies. </p>
+        <h3>End of Lab 1</h3>
+        <hr/> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <a name="lab2"></a> 
+        <h2>Lab 2: Multi-Metric Jobs: Fare Quote</h2>
+        <p><b>Objective</b>: In this lab you will load <strong>farequote</strong> data and analyze it using the <strong>Multi Metric</strong> job creator. We want to see how <strong>partitioning</strong> data and selecting <strong>influencers</strong> can benefit our analysis and discovery of anomalous behavior. This dataset is based on fictional airlines and the response time our systems are recording when communicating with them. Each document specifies the <strong>@timestamp</strong> of the event, how long the <strong>response</strong> took, and the <strong>airline code</strong>. An analogy for this type of data could be calling various services over time and determining when they are not behaving as planned by logging and analyzing the data. </p>
+
+        <ol>
+            <li>
+                First, you need to load a new dataset for this lab. Start by copying the <kbd>farequote/farequote.csv</kbd> and <kbd>farequote/farequote.conf</kbd> files from the lab folder into your <kbd>LOGSTASH_HOME/bin</kbd> directory.
+            </li>
+            <li>
+                From your <kbd>LOGSTASH_HOME/bin</kbd> directory, run the following command:
+                <br/><br/><strong>On Windows:</strong>
+                <pre class="bash">type farequote.csv | .\logstash -f farequote.conf</pre>
+                <br/><strong>Mac/Linux users:</strong>
+                <pre class="bash">cat farequote.csv | ./logstash -f farequote.conf</pre> 
+            </li>
+            <li>
+                To verify the data was loaded successfully, run the following command:
+                <pre><code>GET farequote/_search</code></pre> You should get 86,275 hits.
+            </li>
+            <li>
+                The interesting data points are <strong>@timestamp</strong>, <strong>responsetime</strong>, and <strong>airline</strong>. Remember, the <strong>count</strong> of documents is interesting too! What is the minimum and maximum value for the <strong>@timestamp</strong> field?<br/>
+                <input type="button" value="Show answer:" onclick="showAnswer('solution3')" />
+                <div id="solution3"  style="display:none;" > The minimum <strong>@timestamp</strong> value is <strong>"2015-12-07T00:00:00.000Z"</strong> and the maximum is <strong>"2015-12-11T23:59:56.000Z"</strong>. You can get these values using this aggregation:
+                    <pre class="code">GET farequote/_search
+{
+  "size": 0,
+  "query": {
+    "match_all": {}
+  },
+  "aggs": {
+    "min_time": {
+      "min": {
+        "field": "@timestamp"
+      }
+    },
+    "maxtime": {
+      "max": {
+        "field": "@timestamp"
+      }
+    }
+  }
+}</pre>
+                </div>
+            </li>
+            <li>
+                We also know that the 86,275 documents in this dataset span about 4 full days. By knowing this we understand the rate at which documents are coming into our system and this helps determine reasonable <strong>bucket spans</strong>. How many unique <strong>airlines</strong> are there?<br/>
+                <input type="button" value="Show answer:" onclick="showAnswer('solution4')" />
+                <div id="solution4"  style="display:none;" > There are <strong>19</strong> unique airlines. The <strong>cardinality</strong> aggregation can show this:
+                    <pre class="code">GET farequote/_search
+{
+  "size": 0,
+  "aggs": {
+    "airlines": {
+      "cardinality": {
+        "field": "airline.keyword"
+      }
+    }
+  }
+}</pre> 
+                </div>
+            </li>
+            <li>
+                Because there are 19 unique airlines, there are on average 4,540 events per airline (Keep in mind the actual distribution is <strong>not</strong> even across airlines. Can you figure out how to see how many records exist for each airline?). This dataset covers 96 hours worth of events which means there are about 47 events per airline per hour. In total there are about 898 events per hour total. This type of information can influence the <strong>bucket span</strong> that may make sense. Would it make sense to use <strong>bucket spans</strong> of 1 minute considering this?<br/>
+                <input type="button" value="Show answer:" onclick="showAnswer('solution5')" />
+                <div id="solution5"  style="display:none;" ><strong>No</strong>. There isn't enough data coming in per minute. However, <strong>15m</strong> or <strong>30m</strong> bucket spans would be appropriate. Machine learning works best when it has enough samples to work on.
+                </div>
+            </li>
+            <li>
+                Create an index pattern for <strong>farequote</strong>. To do this you need to open the "Management" tab in Kibana, then select <strong>"Index Patterns"</strong>, then click the plus <strong>"+"</strong> icon to add a new pattern. Use  <strong>farequote</strong> for the <strong>"Index name or pattern"</strong> and set the timefield to <strong>@timestamp</strong>.
+            </li>
+            <li>
+                It is time to build a Machine Learning job! Create a <strong>Single Metric job</strong> that uses the <strong>Count aggregation</strong> to detect anomalies across the entire <strong>farequote</strong> dataset. Use 30m <strong>bucket spans</strong>. Name the job <strong>farequote-count</strong>. Remember to click the <strong>"Use full farequote data"</strong> button before creating the job.<br/>
+                <input type="button" value="Show answer:" onclick="showAnswer('solution6')" />
+                <div id="solution6"  style="display:none;">
+                    <img src="images/farequote-simple-config.png"/>
+                    <img src="images/farequore-result.png"/>
+                </div>
+            </li>
+            <li>At what time did the 1 <strong>major</strong> anomoly occur?<br/>
+                <input type="button" value="Show answer:" onclick="showAnswer('solution7')" />
+                <div id="solution7"  style="display:none;" >
+                    <p><strong>December 11th 2015, 04:30:00</strong></p>
+                    <p>If you <strong>View results</strong> you will easily find this anomaly.
+                    </p>
+                </div>
+            </li>
+            <li>Create a new <strong>Multi Metric job</strong> from the farequote index. How would you configure a job so that it can detect when the <strong>Mean</strong> of the <strong>responsetime</strong> field is anomalous and which <strong>airline(s)</strong> are responsible?<br/>
+                <input type="button" value="Show answer:" onclick="showAnswer('solution8')" />
+                <div id="solution8"  style="display:none;" >
+                    We need a job that has this criteria:
+                    <ul>
+                        <li>  <strong>responsetime</strong> selected and the <strong>Mean</strong> aggregation selected
+                        </li>
+                        <li> A reasonable <strong>bucket span</strong> - 15 minutes would be fine.
+                        </li>
+                        <li> <strong>airline.keyword</strong> would be the <strong>Key field</strong>, or <strong>Influencer</strong>
+                        </li>
+                    </ul>
+                    The job configuration would look like this:
+                    <img src="images/multi-metric-responsetime.png"/>
+                </div>
+            </li>
+            <li>What are the top 2 airlines that are influencing unusual response times?<br/>
+                <input type="button" value="Show answer:" onclick="showAnswer('solution9')" />
+                <div id="solution9"  style="display:none;" >
+                    The 2 main influencer's are <strong>AWE</strong> and <strong>NKS</strong>. Keep in mind that you are using a <strong>Mean</strong> analysis function. If you wanted to track specifically the slow responders you would want to use a <strong>Low Mean</strong> function and if you wanted to track the fast ones specifically then you could use <strong>High Mean</strong>.
+                </div>
+            </li>
+            <li>Create a new <strong>Multi Metric Job</strong> that now <strong>Split's</strong> the data by <strong>airline.keyword</strong>. Now instead of comparing the response time against the dataset as a whole, the response time will be compared to each individual airlines history.<br/><input type="button" value="Show answer:" onclick="showAnswer('solution10')" />
+                <div id="solution10"  style="display:none;" >
+                    <img src="images/response-partitioned.png">
+                </div>
+            </li>
+            <li>What are the top-2 influencer's now?<br/>
+                <input type="button" value="Show answer:" onclick="showAnswer('solution11')" />
+                <div id="solution11"  style="display:none;" >
+                    The top-2 influencer's are now <strong>AWE</strong> and <strong>AAL</strong>. The reason it is different than the previous 2 (AWE and NKS) is because we were looking at each airline individually this time against <strong>their own</strong> history.
+                </div>
+            </li>
+            <li>Click on the <strong>Anomaly Timeline</strong> Overall on the date <strong>"December 8th 2015, 19:00"</strong>. You'll notice that there is a breakout for each individual top-influencer but one of them has <strong>critical</strong> anomalies individually showing for itself. Why did this not show up in the <strong>overall</strong> timeline?<br/>
+                <input type="button" value="Show answer:" onclick="showAnswer('solution12')" />
+                <div id="solution12"  style="display:none;" >
+                    <img src="images/response-time-overall.png">
+                    When you're looking at the breakout of anomalies it's important to realize that only the part shaded in gray is representative of <strong>overall</strong> at that time. The UI shows some before and after. You'll notice the <strong>AAL</strong> critical's you see actually occurred later, on December 9th 2015, 11:00. Click on the <strong>overall</strong> box on that date and you'll those 2 critical's are now in the gray shaded area.
+                    <img src="images/response-time-overall2.png">
+                </div>
+            </li>
+            <li>Create a <strong>Multi Metric job</strong> that only uses the <strong>Count</strong> but also sets a <strong>Keyfield</strong> or <strong>airline.keyword</strong>. Compare the results of this to the previous <strong>Single Metric job</strong> you created for the <strong>farequote</strong> data. Both show a single <strong>critical</strong> anomaly for the same airline on the same date but they have a different <strong>Anomaly Score</strong>. Why is this?<br/>
+                <input type="button" value="Show answer:" onclick="showAnswer('solution13')" />
+                <div id="solution13"  style="display:none;" >
+                    The <strong>Simgle Metric job</strong> created a score of <strong>80</strong> and the <strong>Multi Metric job</strong> using the <strong>Keyfield</strong> generated one of 98. This is because with the <strong>Multi Metric job</strong> you compared the airlines to their own past behavior rather than the entire dataset as a whole. When creating Machine Learning jobs you will have to consider if it makes sense to partition or not. And sometimes you'll want a job that does both!
+                    <img src="images/single-vs-multi.png">
+                    <img src="images/multi-vs-single.png">
+                </div>
+            </li>
+        </ol>
+        <p class="summary"><b>Summary</b>: Congratulations! You have completed Lab 2. You loaded another dataset and built <strong>Multi Metric jobs</strong> with it. </p>
+        <h3>End of Lab 2</h3>
+
+
+
+
+
+
+
+
+
+        <a name="lab3"></a> 
+        <h2>Lab 3: Advanced Jobs: Cloudwatch</h2>
+        <p><b>Objective</b>: In this lab you will load <strong>cloudwatch</strong> data and analyze it using the <strong>Advanced</strong> job creator. You will also add a filter to a data feed, use a script to concatenate a field for Machine Learning analysis, and see how you can use multiple detectors in a single job. The dataset that this lab uses is similar to data you would see if you were to collect system metrics from many machines in a typical infrastructure - things like network in and out, disk I/O and CPU utilization.</p>
+
+        <ol>
+            <li>
+                First, you need to load a new dataset for this lab. Start by copying the <kbd>cloudwatch/cloudwatch.csv</kbd> and <kbd>cloudwatch/cloudwatch.conf</kbd> files from the lab folder into your <kbd>LOGSTASH_HOME/bin</kbd> directory.
+            </li>
+            <li>
+                From your <kbd>LOGSTASH_HOME/bin</kbd> directory, run the following command:
+                <br/><br/><strong>On Windows:</strong>
+                <pre class="bash">type cloudwatch.csv | .\logstash -f cloudwatch.conf</pre>
+                <br/><strong>Mac/Linux users:</strong>
+                <pre class="bash">cat cloudwatch.csv | ./logstash -f cloudwatch.conf</pre> 
+            </li>
+            <li>
+                To verify the data was loaded successfully, run the following command:
+                <pre><code>GET cloud*/_search</code></pre> You should get 258,440 hits.
+            </li>
+            <li>
+                The interesting data points are <strong>@timestamp</strong>, <strong>instance</strong>, and <strong>region</strong>. There are also numerous fields that have to do with metrics that were collected from the various instances. The <strong>count</strong> might not be too interesting in this case since we would expect that we would receive a near constant flow of metrics data. What is the minimum and maximum value for the <strong>@timestamp</strong> field?<br/>
+                <input type="button" value="Show answer:" onclick="showAnswer('solution14')" />
+                <div id="solution14"  style="display:none;" > The minimum <strong>@timestamp</strong> value is <strong>"2015-10-28T00:00:00.000Z"</strong> and the maximum is <strong>"2015-11-11T13:31:00.000Z"</strong>. You can get these values using this aggregation:
+                    <pre class="code">GET cloud*/_search
+{
+  "size": 0,
+  "aggs": {
+    "min_time": {
+      "min": {
+        "field": "@timestamp"
+      }
+    },
+    "maxtime": {
+      "max": {
+        "field": "@timestamp"
+      }
+    }
+  }
+}</pre>
+                </div>
+            </li>
+            <li>We also know there are 258,440 documents in this dataset which spans about 2 weeks. By knowing this we understand the rate at which documents are coming into our system and this helps determine reasonable <strong>bucket spans</strong>. In a real-world environment we would probably want to specify new anomalies in about 15m-30m ranges as well.
+            </li>
+            <li>
+                Create an index pattern for <strong>cloudwatch</strong>. To do this you need to open the "Management" tab in Kibana and create a new <strong>index pattern</strong> for <strong>cloudwatch*</strong> and set the timefield to <strong>@timestamp</strong>. Keep in mind that the data import will create numerous indexes for this data so we use the * character to specify that this pattern will match any index that begins with "cloudwatch".
+            </li>
+
+            <li>
+                Since we are capturing metrics from a variety of instances it would make sense to create multiple detectors and partition on the instance field. Create a new <strong>Advanced Job</strong>:
+                <img src="images/lab-3_1.png" />
+                Select all of the <strong>cloudwatch*</strong> indices. <strong>IMPORTANT: </strong> On the <strong>Job Details</strong> tab, be sure to check the box <strong>Use dedicated index</strong>. Configure the job to have these settings:
+                <ul>
+                    <li>
+                        A detector which find the <strong>Mean</strong> of <strong>CPUUtilization</strong> and a partition field of <strong>instance.keyword</strong> and <strong>1h</strong> bucket spans
+                    </li>
+                    <li>
+                        A detector which find the <strong>Mean</strong> of <strong>DiskReadBytes</strong> and a partition field of <strong>instance.keyword</strong> and <strong>1h</strong> bucket spans
+                    </li>
+                    <li>
+                        A detector which find the <strong>Mean</strong> of <strong>DiskReadOps</strong> and a partition field of <strong>instance.keyword</strong> and <strong>1h</strong> bucket spans
+                    </li>
+                    <li>
+                        A detector which find the <strong>Mean</strong> of <strong>DiskWriteBytes</strong> and a partition field of <strong>instance.keyword</strong> and <strong>1h</strong> bucket spans
+                    </li>
+                    <li>
+                        A detector which find the <strong>Mean</strong> of <strong>DiskWriteOps</strong> and a partition field of <strong>instance.keyword</strong> and <strong>1h</strong> bucket spans
+                    </li>
+                    <li>
+                        A detector which find the <strong>Mean</strong> of <strong>NetworkOut</strong> and a partition field of <strong>instance.keyword</strong> and <strong>1h</strong> bucket spans
+                    </li>
+                    <li>
+                        A detector which find the <strong>Mean</strong> of <strong>NetworkIn</strong> and a partition field of <strong>instance.keyword</strong> and <strong>1h</strong> bucket spans
+                    </li>
+                    <li>
+                        Set influences to <strong>instance.keyword</strong> and <strong>region.keyword</strong>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                Start the job and after processing open the <strong>Anomaly Explorer</strong> and find the region that has contributed the most critical anomalies.<br/>
+                <input type="button" value="Show answer:" onclick="showAnswer('solution15')" />
+                <div id="solution15"  style="display:none;" > 
+                    We can see that the region with the most critical's is <strong>sa-east-1</strong>. We can see this by the <strong>Top Influencers</strong> chart on the left and also by selecting <strong>region</strong> in the <strong>View by</strong> drop down.
+                    <img src="images/critical-region.png">
+                </div>
+            </li>
+            <li>
+                Set the <strong>View by</strong> to <strong>region</strong> and click on the critical anomaly score cell for <strong>sa-east-1</strong> on the date <strong>November 7th, 2015 19:00</strong>. When you scroll down you'll see a chart for <strong>mean(DiskWriteOps) partitionfield=instance (cloudwatch) - instance i-5d302081</strong>. To the right of that there is a <strong>View</strong> icon that when clicked will take you to the <strong>Single Metric Viewer</strong>. Click that:
+                <img src="images/single-metric-advanced.png">
+                How many anomalies are in that range that are of level minor or higher?<br/>
+                <input type="button" value="Show answer:" onclick="showAnswer('solution16')" />
+                <div id="solution16"  style="display:none;" > 
+                    There are 5 anomalies that are warning or higher. Remember to set the <strong>Interval</strong> to <strong>all</strong>
+                    <img src="images/single-metric-view.png">
+                </div>
+            </li>
+            <li>
+                Clone the job you just made by clicking <strong>Clone job</strong> in the <strong>Job Management UI</strong>. Follow these instructions:
+                <ul>
+                    <li> Give this cloned job a new name </li>
+                    <li> Click on the <strong>Datafeed</strong> tab and add this <strong>Query</strong>:<pre class="code">{"term": {"region.keyword": {"value": "eu-central-1","boost": 1}}}
+                </pre>
+                    </li>
+                    <li>Your configuration might look like this:
+                        <img src="images/cloned-query-config.png">
+                    </li>
+                    <li>Save the job and start the job</li>
+                    <li>When the analysis is complete open the <strong>Anomaly Explorer</strong> for this job.</li>
+                    <li>Compare the results to the previous job for the <strong>eu-central-1</strong> region.</li>
+                    <li>Notice how the new job only analyzes this region?</li>
+                    <li>Do you notice how the <strong>Overall</strong> timeline for this job is different than the timeline for the <strong>region</strong> in the previous job?
+                </ul>
+                This is because the new job uses a filter. So the overall anomaly score is only influenced by this region.
+            </li>
+            <li>
+                For this new job, which instance is the most problematic in terms of anomaly score?
+                <br/>
+                <input type="button" value="Show answer:" onclick="showAnswer('solution17')" />
+                <div id="solution17"  style="display:none;" > 
+                    <strong>i-e3156052</strong> is the most problematic.
+                </div>
+            </li>
+            <li>
+                For this instance, which metric has the highest anomaly score across the entire timeline?
+                <br/>
+                <input type="button" value="Show answer:" onclick="showAnswer('solution18')" />
+                <div id="solution18"  style="display:none;" > 
+                    It would appear <strong>CPU Utilization</strong> has the highest anomaly score overall for this region and this instance:
+                    <img src="images/eu-central-most-anomaly.png">
+                </div>
+            </li>
+            <li>
+                Try creating advanced jobs for the other datasets you have loaded. What do you come up with that is interesting!?
+            </li>
+        </ol>
+        <p class="summary"><b>Summary</b>: Congratulations! You have completed Lab 3. You loaded another dataset and built <strong>Advanced jobs</strong> as well as cloned them and added filters. </p>
+        <h3>End of Lab 3</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+        <a name="lab4"></a> 
+        <h2>Lab 4: Machine Learning API</h2>
+        <p><b>Objective</b>: In this lab you will interact with your existing anomalies using the Machine Learning API. Hopefully, after this lab you will better understand how you could automate the detection of anomalous behavior. For bonus points you can use X-Pack: Alerting to create Watches that will alert you when the types of anomalies you are interested in are generated. You will be using these API's in this lab. You will want to bookmark this as it is a great reference:<p> <a href="https://www.elastic.co/guide/en/x-pack/current/ml-apis.html" target="_blank"> Machine Learning API Documentation</a> </p>
+        <hr/> 
+        <ol>
+            <li>Open the <strong>Dev Tools</strong> tab in Kibana:
+                <img src="images/console.png">
+            </li>
+            <li>Get a list of the anomaly detectors you have created:
+                <pre class="code">GET _xpack/ml/anomaly_detectors/</pre>
+            </li>
+            <li>You created one for <strong>cloudwatch</strong> in the previous lab. Record its <strong>job_id</strong>. For example, mine was called <strong>cloudwatch</strong>. Use that job_id to get the records associated with it:
+                <pre class="code">GET _xpack/ml/anomaly_detectors/cloudwatch/results/records
+</pre>
+            <li>You should see a record that looks similar to this:
+                <pre class="code">{
+      "job_id": "cloudwatch",
+      "result_type": "record",
+      "probability": 1.02817e-17,
+      "record_score": 99.0972,
+      "initial_record_score": 99.0972,
+      "bucket_span": 3600,
+      "detector_index": 4,
+      "sequence_num": 10,
+      "is_interim": false,
+      "timestamp": 1446242400000,
+      "partition_field_name": "instance",
+      "partition_field_value": "i-4ff414ac",
+      "function": "mean",
+      "function_description": "mean",
+      "typical": [
+        8452.79
+      ],
+      "actual": [
+        29713.5
+      ],
+      "field_name": "DiskWriteOps",
+      "influencers": [
+        {
+          "influencer_field_name": "region",
+          "influencer_field_values": [
+            "sa-east-1"
+          ]
+        },
+        {
+          "influencer_field_name": "instance",
+          "influencer_field_values": [
+            "i-4ff414ac"
+          ]
+        }
+      ],
+      "instance": [
+        "i-4ff414ac"
+      ],
+      "region": [
+        "sa-east-1"
+      ]
+    }</pre> This tells you everything about this anomaly!
+            </li>
+            <li>
+                Get the records back but sorted by the record_score:
+                <pre class="code">GET _xpack/ml/anomaly_detectors/cloudwatch/results/records
+{
+  "sort": "record_score"
+}</pre>Do you notice how this sends back the anomalies from <strong>least</strong> anomalous to <strong>most</strong> anomalous? We want to sort this so they come back the other way!
+            </li>
+            <li>
+                Rewrite the request to sort descending:
+                <pre class="code">GET _xpack/ml/anomaly_detectors/cloudwatch/results/records
+{
+  "sort": "record_score",
+  "desc": true
+}</pre>That is better - now we have the most relevant. But can we do better? What if we only wanted records that had a <strong>record_score</strong> greater than 75?</li><li>Rewrite the request to limit the results to records with a <strong>record_score</strong> greater than 75:<pre class="code">GET _xpack/ml/anomaly_detectors/cloudwatch/results/records
+{
+  "sort": "record_score",
+  "desc": true,
+  "record_score" : 75
+}</pre>Even better - notice how we are getting back fewer and fewer documents each time?
+            </li>
+            <li>We are working with a static dataset. In most situations you would have a datafeed that would continually gather results and process them. You could then use these API's to see if there are new anomalies recorded. To simulate this, we will use this API to get the first 5 records and then record the final timestamp. We could then use that to get the next batch: <pre>GET _xpack/ml/anomaly_detectors/cloudwatch/results/records
+{
+  "sort": "record_score",
+  "desc": true,
+  "record_score": 75,
+  "page": {
+    "size": 5
+  }
+}</pre>
+                In reality you would record the final timestamp of the last record (and not limit the paging) and then use that on the next run to fetch the new anomalies.
+            </li>
+            <li>
+                Record the final timestamp and modify the request to get records <strong>since</strong> starting at that time: <pre class="code">GET _xpack/ml/anomaly_detectors/cloudwatch/results/records
+{
+  "sort": "record_score",
+  "desc" : true,
+  "record_score" : 75,
+  "start" : "1446235200000"
+}
+</pre>This simulates how you might consider gathering records scheduled to run on a similar schedule to the associated datafeed and job.
+            </li>
+            <li>Now we want to create a new job and begin the datafeed and then <strong>stop</strong> it before it is done. You'll want to get your API request ready before you create the job and datafeed. Use the name "new_job" for a new job you will create and then stop the datafeed while it runs:<pre class="code">POST _xpack/ml/datafeeds/datafeed-new_job/_stop</pre>Notice how <strong>Machine Learning</strong> names the datafeeds with a prefix of <strong>datafeed-</strong> to the <strong>job id</strong>. In this case it is named <strong>datafeed-new_job</strong>.
+            </li>
+            <li>Create a new job and configure it and then start it. Quickly go back to the <strong>Dev Tools</strong> and run the command from the previous step. You should see this output:<pre class="code">{
+  "stopped": true
+}</pre> If the datafeed has already ended then you will receive a <strong>409</strong> response code indicating the datafeed has been stopped.
+            </li>
+            <li>
+                Now restart the datafeed:<pre class="code">POST _xpack/ml/datafeeds/datafeed-new_job/_start
+</pre></li>
+            <li>Try playing around with some other API requests to create a job, create a datafeed, open the job, start the datafeed and analyze the results using the <strong>records</strong> API. Good luck!</li>
+        </ol>
+        <p class="summary"><b>Summary</b>: Congratulations! You have completed Lab 4. You used various API's to explore your anomaly data and stop and start a datafeed. Maybe you even created and started a new job and datafeed with the API! </p>
+        <h3>End of Lab 4</h3>
+        <h3>Congratulations, you have completed all the labs!</h3>
+        <hr/> 
+    </body>
+</html>
+
